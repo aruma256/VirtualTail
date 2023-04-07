@@ -5,3 +5,4 @@ def main(page: ft.Page):
     pass
 
 ft.app(target=main)
+

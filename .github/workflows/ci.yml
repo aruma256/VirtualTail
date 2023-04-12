@@ -32,3 +32,7 @@ jobs:
           "
       - name: Run Flake8
         run: flake8
+      - name: Install dependencies
+        run: pip install pytest
+      - name: Run tests
+        run: python -m pytest

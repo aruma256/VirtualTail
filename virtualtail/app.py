@@ -1,11 +1,15 @@
 import flet as ft
 
+from .osc_value_provider import OSCValueProvider
 from .view.home_view import HomeView
 from .view.osslicense_view import OSSLicenseView
 
 
 def main(page: ft.Page):
     page.title = "サンプル"
+
+    osc_value_provider = OSCValueProvider()
+    osc_value_provider.start()
 
     def route_change(route):
         page.views.clear()

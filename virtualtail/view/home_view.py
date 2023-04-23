@@ -9,28 +9,31 @@ from ..osc_value_provider import OSCValueProvider
 
 class HomeView(ft.View):
     def __init__(self, page: ft.Page):
-        self._position_text = ft.Text("aaa")
+        self._app_bar = ft.AppBar(
+            title=ft.Text("Test app"),
+            bgcolor=ft.colors.SURFACE_VARIANT,
+        )
+        self._position_text = ft.Text()
+        self._start_button = ft.ElevatedButton(
+            "Start",
+            on_click=self._start_button_clicked
+        )
+        self._oss_button = ft.ElevatedButton(
+            "OSS License",
+            on_click=lambda _: page.go("/osslicense"),
+        )
         super().__init__(
             route="/",
             controls=[
-                ft.AppBar(
-                    title=ft.Text("Test app"),
-                    bgcolor=ft.colors.SURFACE_VARIANT,
-                ),
-                ft.ElevatedButton(
-                    "Start",
-                    on_click=self._start_button_clicked,
-                ),
+                self._app_bar,
+                self._start_button,
                 self._position_text,
-                ft.ElevatedButton(
-                    "OSS License",
-                    on_click=lambda _: page.go("/osslicense"),
-                ),
+                self._oss_button,
             ],
         )
 
-    def _start_button_clicked(self, *args):
-        print(*args)
+    def _start_button_clicked(self, _):
+        self._start_button.disabled = True
         value_provider = OSCValueProvider()
         value_provider.start()
         self._tail_tracker = TailTracker(value_provider)

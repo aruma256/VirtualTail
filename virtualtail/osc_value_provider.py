@@ -27,3 +27,6 @@ class OSCValueProvider:
         server = BlockingOSCUDPServer((self._ip, self._port), dispatcher)
         self._thread = Thread(target=server.serve_forever, daemon=True)
         self._thread.start()
+
+    def get_latest_values(self) -> tuple[float | None, float | None]:
+        return (self.left, self.right)

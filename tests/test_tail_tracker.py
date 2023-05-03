@@ -32,7 +32,7 @@ def test_tail_tracker_update():
     tracker.update()
 
     assert tracker.initialized()
-    assert tracker.get_position() == 2.5
+    assert tracker.get_position() == -2.5
 
 
 def test_tail_tracker_position():
@@ -42,4 +42,4 @@ def test_tail_tracker_position():
     osc_value_provider.get_latest_values.return_value = (-1.0, 1.5)
     tracker.update()
 
-    assert tracker.get_position() == 2.5
+    assert tracker.get_position() == -2.5

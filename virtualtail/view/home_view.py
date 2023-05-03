@@ -1,22 +1,25 @@
-from threading import Thread
-import time
-
 import flet as ft
 
-from ..tail_tracker import TailTracker
-from ..osc_value_provider import OSCValueProvider
+from ..core import Core
 
 
 class HomeView(ft.View):
-    def __init__(self, page: ft.Page):
+    def __init__(self, page: ft.Page, core: Core):
+        self._core = core
+        self._core.view = self
+        #
         self._app_bar = ft.AppBar(
             title=ft.Text("Test app"),
             bgcolor=ft.colors.SURFACE_VARIANT,
         )
         self._position_text = ft.Text()
-        self._start_button = ft.ElevatedButton(
-            "Start",
-            on_click=self._start_button_clicked
+        self._connect_controllers_button = ft.ElevatedButton(
+            "Connect Controllers",
+            on_click=self._connect_controllers_button_clicked,
+        )
+        self._start_osc_server_button = ft.ElevatedButton(
+            "Start OSC-Server",
+            on_click=self._start_osc_server_button_clicked,
         )
         self._oss_button = ft.ElevatedButton(
             "OSS License",
@@ -26,22 +29,20 @@ class HomeView(ft.View):
             route="/",
             controls=[
                 self._app_bar,
-                self._start_button,
+                self._connect_controllers_button,
+                self._start_osc_server_button,
                 self._position_text,
                 self._oss_button,
             ],
         )
 
-    def _start_button_clicked(self, _):
-        self._start_button.disabled = True
-        value_provider = OSCValueProvider()
-        value_provider.start()
-        self._tail_tracker = TailTracker(value_provider)
-        Thread(target=self._update, daemon=True).start()
+    def _connect_controllers_button_clicked(self, _):
+        self._core.connect_controllers()
 
-    def _update(self):
-        while True:
-            self._tail_tracker.update()
-            self._position_text.value = str(self._tail_tracker._position)
-            self.page.update()
-            time.sleep(0.1)
+    def _start_osc_server_button_clicked(self, _):
+        self._start_osc_server_button.disabled = True
+        self._core.start_tail_tracker()
+
+    def on_position_updated(self, position):
+        self._position_text.value = str(position)
+        self.page.update()

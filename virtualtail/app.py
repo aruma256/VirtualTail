@@ -2,14 +2,16 @@ import flet as ft
 
 from .view.home_view import HomeView
 from .view.osslicense_view import OSSLicenseView
+from .core import Core
 
 
 def main(page: ft.Page):
     page.title = "サンプル"
+    core = Core()
 
     def route_change(route):
         page.views.clear()
-        page.views.append(HomeView(page))
+        page.views.append(HomeView(page, core))
         if page.route == "/osslicense":
             page.views.append(OSSLicenseView(page))
         page.update()

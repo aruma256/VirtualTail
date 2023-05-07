@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  ci:
+  license-check:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pip-licenses flake8
+          pip install pip-licenses
       - name: Run license-check
         run: > 
           pip-licenses
@@ -29,9 +29,35 @@ jobs:
             MIT License;
             Mozilla Public License 2.0 (MPL 2.0);
           "
+
+  flake8:
+    runs-on: windows-latest
+    needs: license-check
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install flake8
       - name: Run Flake8
         run: flake8
+
+  tests:
+    runs-on: windows-latest
+    needs: flake8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       - name: Install dependencies
-        run: pip install pytest
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
       - name: Run tests
         run: python -m pytest

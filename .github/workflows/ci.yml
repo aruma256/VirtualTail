@@ -33,7 +33,6 @@ jobs:
 
   flake8:
     runs-on: windows-latest
-    needs: license-check
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -50,7 +49,6 @@ jobs:
 
   tests:
     runs-on: windows-latest
-    needs: flake8
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python

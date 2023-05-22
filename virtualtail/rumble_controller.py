@@ -12,19 +12,24 @@ class RumbleController:
         self._jcon_R = Jcon("R")
         self._jcon_R.connect()
 
-    def update(self, pos: float) -> None:
+    def update(self, pos: float, left_touched: bool, right_touched: bool, grabbed: bool) -> None:
         assert self._jcon_L and self._jcon_R
-        if pos > 0:
-            rumble_level = round(pos * 3.3 * 10)
-            self._jcon_L.send_rumble(min(rumble_level, 11))
-            self._jcon_R.send_rumble(0)
-            print("Left", rumble_level)
-        elif pos < 0:
-            pos = abs(pos)
-            rumble_level = round(pos * 3.3 * 10)
-            self._jcon_L.send_rumble(0)
-            self._jcon_R.send_rumble(min(rumble_level, 11))
-            print("Right", rumble_level)
+        import random
+        if grabbed:
+            left_level = random.choice((10, 11))
+            right_level = random.choice((10, 11))
         else:
-            self._jcon_L.send_rumble(0)
-            self._jcon_R.send_rumble(0)
+            left_level = 0
+            right_level = 0
+            if left_touched:
+                left_level += random.choice((3, 4))
+            if right_touched:
+                right_level += random.choice((3, 4))
+            if pos > 0:
+                left_level += round(pos * 3.3 * 10)
+            elif pos < 0:
+                pos = abs(pos)
+                right_level += round(pos * 3.3 * 10)
+#        print(left_level, right_level)
+        self._jcon_L.send_rumble(min(left_level, 11))
+        self._jcon_R.send_rumble(min(right_level, 11))

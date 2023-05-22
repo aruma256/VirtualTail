@@ -24,7 +24,12 @@ class Core:
         while True:
             self._tail_tracker.update()
             current_position = self._tail_tracker._position
-            self._rumble_controller.update(current_position)
+            self._rumble_controller.update(
+                current_position,
+                self._tail_tracker._left_touched,
+                self._tail_tracker._right_touched,
+                self._tail_tracker._is_grabbed,
+            )
             if self.view:
                 self.view.on_position_updated(current_position)
             time.sleep(0.06)
